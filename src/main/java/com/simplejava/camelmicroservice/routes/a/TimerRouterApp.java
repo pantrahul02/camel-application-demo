@@ -13,6 +13,9 @@ public class TimerRouterApp extends RouteBuilder{
 	
 	@Autowired
 	private GetCurrentTimeBean getCurrentTimeBean;
+	
+	@Autowired
+	private SimpleLoggingProcessingComponent loggingComponent;
 
 	@Override
 	public void configure() throws Exception {
@@ -24,8 +27,15 @@ public class TimerRouterApp extends RouteBuilder{
 		//transformation using bean...
 		
 		from("timer:first-timer")
+		.log("${body}")
+		.transform().constant("My Constant Message")
+		.log("${body}")
 		//.bean("getCurrentTimeBean")
-		.bean(getCurrentTimeBean, "getCurrentTime")
+		//.bean(getCurrentTimeBean, "getCurrentTime")
+		.bean(getCurrentTimeBean)
+		.log("${body}")
+		.bean(loggingComponent)
+		.log("${body}")
 		.to("log:first-timer");//database
 	}
 
